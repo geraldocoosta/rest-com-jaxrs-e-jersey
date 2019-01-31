@@ -32,14 +32,14 @@ public class ClientTest {
 
 	@Test
 	public void testaQueAConexaoComOServidorFunciona() {
-		String conteudo = retornaXmlDoEndPoint("/projetos");
+		String conteudo = retornaXmlDoEndPoint("/projetos/1");
 		Projeto projeto = (Projeto) new XStream().fromXML(conteudo);
 		assertEquals(2014, projeto.getAnoDeInicio());
 	}
 
 	@Test
 	public void testaOEndPointDeProjeto() {
-		String conteudo = retornaXmlDoEndPoint("/carrinhos");
+		String conteudo = retornaXmlDoEndPoint("/carrinhos/1");
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 		assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
 	}

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.thoughtworks.xstream.XStream;
-
 import br.com.alura.loja.modelo.Projeto;
 
 public class ProjetoDAO {
