@@ -1,13 +1,12 @@
 package br.com.alura.loja.modelo;
 
-
 public class Produto {
 
 	private double preco;
 	private long id;
 	private String nome;
 	private int quantidade;
-	
+
 	public Produto(long id, String nome, double preco, int quantidade) {
 		this.id = id;
 		this.nome = nome;
@@ -26,11 +25,11 @@ public class Produto {
 	public String getNome() {
 		return nome;
 	}
-	
+
 	public int getQuantidade() {
 		return quantidade;
 	}
-	
+
 	public double getPrecoTotal() {
 		return quantidade * preco;
 	}
