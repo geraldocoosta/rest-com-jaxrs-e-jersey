@@ -10,7 +10,7 @@ import br.com.alura.loja.modelo.Produto;
 public class CarrinhoDAO {
 
 	private static Map<Long, Carrinho> banco = new HashMap<Long, Carrinho>();
-	private static AtomicLong contador = new AtomicLong(2);
+	private static AtomicLong contador = new AtomicLong(1);
 
 	static {
 		Produto videogame = new Produto(6237, "Videogame 4", 4000, 1);

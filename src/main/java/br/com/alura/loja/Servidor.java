@@ -17,8 +17,16 @@ public class Servidor {
 	}
 
 	public static HttpServer startaServidor() {
+		/* Para startar o server, é necessário essas 3 linhas */
+		/*
+		 * Resource config, configuração do recurso, uri é a uri
+		 * 
+		 * Para esse curso, usamos a implementação Grizzly de um servidor http, que
+		 * suporta servlet io e jax-rs
+		 */
 		ResourceConfig config = new ResourceConfig().packages("br.com.alura.loja");
 		URI uri = URI.create("http://localhost:8080");
-		return  GrizzlyHttpServerFactory.createHttpServer(uri, config);
+		return GrizzlyHttpServerFactory.createHttpServer(uri, config);
 	}
 }
+

@@ -41,6 +41,11 @@ public class Projeto {
 		this.anoDeInicio = anoDeInicio;
 	}
 
+	/*
+	 * Modelo é o mesmo sempre, só muda esses método aqui abaixo, pra retornar o
+	 * json do baguio
+	 */
+
 	public String toXML() {
 		return new XStream().toXML(this);
 	}
@@ -48,6 +53,5 @@ public class Projeto {
 	public String toJson() {
 		return new Gson().toJson(this);
 	}
-
 
 }

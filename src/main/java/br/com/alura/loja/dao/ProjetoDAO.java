@@ -8,6 +8,8 @@ import br.com.alura.loja.modelo.Projeto;
 
 public class ProjetoDAO {
 
+	/* Aquele DAO gostoso */
+
 	private static Map<Long, Projeto> banco = new HashMap<>();
 	private static AtomicLong contador = new AtomicLong(2);
 

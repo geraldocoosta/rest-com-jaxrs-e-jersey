@@ -4,16 +4,21 @@ import static org.junit.Assert.assertEquals;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gson.Gson;
 import com.thoughtworks.xstream.XStream;
 
 import br.com.alura.loja.modelo.Carrinho;
+import br.com.alura.loja.modelo.Produto;
 import br.com.alura.loja.modelo.Projeto;
 
 public class ClientTest {
@@ -33,8 +38,33 @@ public class ClientTest {
 	@Test
 	public void testaQueAConexaoComOServidorFunciona() {
 		String conteudo = retornaXmlDoEndPoint("/projetos/1");
-		Projeto projeto = (Projeto) new XStream().fromXML(conteudo);
+		Projeto projeto = new Gson().fromJson(conteudo, Projeto.class);
 		assertEquals(2014, projeto.getAnoDeInicio());
+	}
+	
+	@Test
+	public void testaQueEstejaAdicionandoCarrinho() {
+		WebTarget target = criandoTarget();
+		
+		Projeto projeto = new Projeto();
+		projeto.setAnoDeInicio(2018);
+		projeto.setNome("FITFIU");
+		String json = new Gson().toJson(projeto);
+		
+		Entity<String> entity = Entity.entity(json, MediaType.APPLICATION_JSON);
+		Response response = target.path("/projetos").request().post(entity);
+		assertEquals("{\"status\":\"sucess\"}", response.readEntity(String.class));
+	}
+
+	private WebTarget criandoTarget() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target("http://localhost:8080");
+		return target;
+	}
+	
+	@Test
+	public void testaQueEstejaAdicionandoProjeto() {
+		
 	}
 
 	@Test
@@ -45,8 +75,7 @@ public class ClientTest {
 	}
 
 	private String retornaXmlDoEndPoint(String string) {
-		Client client = ClientBuilder.newClient();
-		WebTarget target = client.target("http://localhost:8080");
+		WebTarget target = criandoTarget();
 		return target.path(string).request().get(String.class);
 	}
 }
