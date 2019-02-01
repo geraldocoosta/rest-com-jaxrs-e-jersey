@@ -32,6 +32,10 @@ public class Carrinho {
 	public String getRua() {
 		return rua;
 	}
+	
+	public String getCidade() {
+		return cidade;
+	}
 
 	public void setRua(String rua) {
 		this.rua = rua;
