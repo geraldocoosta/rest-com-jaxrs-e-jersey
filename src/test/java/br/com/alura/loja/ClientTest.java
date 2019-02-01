@@ -1,6 +1,7 @@
 package br.com.alura.loja;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,10 +25,13 @@ import br.com.alura.loja.modelo.Projeto;
 public class ClientTest {
 
 	private HttpServer server;
+	private Client client;
 
 	@Before
 	public void before() {
 		server = Servidor.startaServidor();
+		client = ClientBuilder.newClient();
+		;
 	}
 
 	@After
@@ -41,19 +45,24 @@ public class ClientTest {
 		Projeto projeto = new Gson().fromJson(conteudo, Projeto.class);
 		assertEquals(2014, projeto.getAnoDeInicio());
 	}
-	
+
 	@Test
 	public void testaQueEstejaAdicionandoCarrinho() {
 		WebTarget target = criandoTarget();
-		
-		Projeto projeto = new Projeto();
-		projeto.setAnoDeInicio(2018);
-		projeto.setNome("FITFIU");
-		String json = new Gson().toJson(projeto);
-		
-		Entity<String> entity = Entity.entity(json, MediaType.APPLICATION_JSON);
-		Response response = target.path("/projetos").request().post(entity);
-		assertEquals("{\"status\":\"sucess\"}", response.readEntity(String.class));
+
+		Carrinho carrinho = new Carrinho();
+		carrinho.adiciona(new Produto(156l, "Patinete", 25.5, 1));
+		carrinho.setCidade("Gama");
+		carrinho.setRua("Uma rua");
+		String xml = carrinho.toXML();
+
+		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Response response = target.path("/carrinhos").request().post(entity);
+		assertEquals(201, response.getStatus());
+
+		String conteudo = client.target(response.getHeaderString("Location")).request().get(String.class);
+		Carrinho carrinhoConfere = (Carrinho) new XStream().fromXML(conteudo);
+		assertTrue(carrinhoConfere.getRua().equals(carrinho.getRua()));
 	}
 
 	private WebTarget criandoTarget() {
@@ -61,10 +70,19 @@ public class ClientTest {
 		WebTarget target = client.target("http://localhost:8080");
 		return target;
 	}
-	
+
 	@Test
 	public void testaQueEstejaAdicionandoProjeto() {
-		
+		WebTarget target = criandoTarget();
+
+		Projeto projeto = new Projeto();
+		projeto.setAnoDeInicio(2018);
+		projeto.setNome("FITFIU");
+		String json = new Gson().toJson(projeto);
+
+		Entity<String> entity = Entity.entity(json, MediaType.APPLICATION_JSON);
+		Response response = target.path("/projetos").request().post(entity);
+		assertEquals("{\"status\":\"sucess\"}", response.readEntity(String.class));
 	}
 
 	@Test
