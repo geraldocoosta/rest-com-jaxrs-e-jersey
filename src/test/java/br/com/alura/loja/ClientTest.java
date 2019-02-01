@@ -60,7 +60,7 @@ public class ClientTest {
 		Response response = target.path("/carrinhos").request().post(entity);
 		assertEquals(201, response.getStatus());
 
-		String conteudo = client.target(response.getHeaderString("Location")).request().get(String.class);
+		String conteudo = client.target(response.getLocation()).request().get(String.class);
 		Carrinho carrinhoConfere = (Carrinho) new XStream().fromXML(conteudo);
 		assertTrue(carrinhoConfere.getRua().equals(carrinho.getRua()));
 	}
@@ -82,7 +82,11 @@ public class ClientTest {
 
 		Entity<String> entity = Entity.entity(json, MediaType.APPLICATION_JSON);
 		Response response = target.path("/projetos").request().post(entity);
-		assertEquals("{\"status\":\"sucess\"}", response.readEntity(String.class));
+		assertEquals(201, response.getStatus());
+	
+		String jsonASerComparado = client.target(response.getLocation()).request().get(String.class);
+		Projeto fromJson = new Gson().fromJson(jsonASerComparado, Projeto.class);
+		assertTrue(projeto.getNome().equals(fromJson.getNome()));
 	}
 
 	@Test

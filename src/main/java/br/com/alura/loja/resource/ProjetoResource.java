@@ -1,11 +1,15 @@
 package br.com.alura.loja.resource;
 
+import java.net.URI;
+
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 
@@ -40,12 +44,13 @@ public class ProjetoResource {
 		 */
 		return new ProjetoDAO().busca(id).toJson();
 	}
-	
+
 	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	public String adiciona(String json) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response adiciona(String json) {
 		Projeto project = new Gson().fromJson(json, Projeto.class);
 		new ProjetoDAO().adiciona(project);
-		return "{\"status\":\"sucess\"}";
+		URI uri = URI.create("http://localhost:8080/projetos/" + project.getId());
+		return Response.created(uri).build();
 	}
 }
