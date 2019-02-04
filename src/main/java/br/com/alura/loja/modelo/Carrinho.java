@@ -54,6 +54,7 @@ public class Carrinho {
 			Produto produto = (Produto) iterator.next();
 			if (produto.getId() == id) {
 				iterator.remove();
+				break;
 			}
 		}
 	}
@@ -80,5 +81,12 @@ public class Carrinho {
 	public String toXML() {
 		return new XStream().toXML(this);
 	}
+
+	@Override
+	public String toString() {
+		return "Carrinho [produtos=" + produtos + ", rua=" + rua + ", cidade=" + cidade + ", id=" + id + "]";
+	}
+	
+	
 
 }

@@ -3,6 +3,8 @@ package br.com.alura.loja;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -83,7 +85,7 @@ public class ClientTest {
 		Entity<String> entity = Entity.entity(json, MediaType.APPLICATION_JSON);
 		Response response = target.path("/projetos").request().post(entity);
 		assertEquals(201, response.getStatus());
-	
+
 		String jsonASerComparado = client.target(response.getLocation()).request().get(String.class);
 		Projeto fromJson = new Gson().fromJson(jsonASerComparado, Projeto.class);
 		assertTrue(projeto.getNome().equals(fromJson.getNome()));
@@ -94,6 +96,18 @@ public class ClientTest {
 		String conteudo = retornaXmlDoEndPoint("/carrinhos/1");
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 		assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
+	}
+
+	@Test
+	public void testaOMetodoDeleteDoProdutoDoCarrinho() {
+		Response delete = criandoTarget().path("/carrinhos/1/produtos/6237").request().delete();
+		assertEquals(200, delete.getStatus());
+
+		String carrinhoSemProduto = criandoTarget().path("/carrinhos/1").request().get(String.class);
+		Carrinho carrinho = (Carrinho) new XStream().fromXML(carrinhoSemProduto);
+		List<Produto> produtos = carrinho.getProdutos();
+		assertEquals(1, produtos.size());
+		System.out.println(carrinho);
 	}
 
 	private String retornaXmlDoEndPoint(String string) {
