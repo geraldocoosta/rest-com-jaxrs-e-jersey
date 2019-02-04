@@ -13,6 +13,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +34,10 @@ public class ClientTest {
 	@Before
 	public void before() {
 		server = Servidor.startaServidor();
-		client = ClientBuilder.newClient();
-		;
+		/*Uma aula pra essas 3 linhas de código, xD dms*/
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		client = ClientBuilder.newClient(config);
 	}
 
 	@After
@@ -113,7 +117,6 @@ public class ClientTest {
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(carrinhoSemProduto);
 		List<Produto> produtos = carrinho.getProdutos();
 		assertEquals(1, produtos.size());
-		System.out.println(carrinho);
 	}
 
 	private String retornaXmlDoEndPoint(String string) {
