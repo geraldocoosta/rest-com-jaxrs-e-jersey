@@ -99,6 +99,12 @@ public class ClientTest {
 	}
 
 	@Test
+	public void testandoOMetodoDeleteDosProjetos() {
+		Response delete = criandoTarget().path("projetos/1").request().delete();
+		assertEquals(200, delete.getStatus());
+	}
+
+	@Test
 	public void testaOMetodoDeleteDoProdutoDoCarrinho() {
 		Response delete = criandoTarget().path("/carrinhos/1/produtos/6237").request().delete();
 		assertEquals(200, delete.getStatus());
