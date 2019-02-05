@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import com.thoughtworks.xstream.XStream;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Carrinho {
 
 	private List<Produto> produtos = new ArrayList<Produto>();
@@ -32,7 +38,7 @@ public class Carrinho {
 	public String getRua() {
 		return rua;
 	}
-	
+
 	public String getCidade() {
 		return cidade;
 	}
@@ -86,7 +92,5 @@ public class Carrinho {
 	public String toString() {
 		return "Carrinho [produtos=" + produtos + ", rua=" + rua + ", cidade=" + cidade + ", id=" + id + "]";
 	}
-	
-	
 
 }

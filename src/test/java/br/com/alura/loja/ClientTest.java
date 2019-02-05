@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
-import com.thoughtworks.xstream.XStream;
 
 import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Produto;
@@ -60,15 +59,13 @@ public class ClientTest {
 		carrinho.adiciona(new Produto(156l, "Patinete", 25.5, 1));
 		carrinho.setCidade("Gama");
 		carrinho.setRua("Uma rua");
-		String xml = carrinho.toXML();
 
-		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Entity<Carrinho> entity = Entity.entity(carrinho, MediaType.APPLICATION_XML);
 		Response response = target.path("/carrinhos").request().post(entity);
 		assertEquals(201, response.getStatus());
 
-		String conteudo = client.target(response.getLocation()).request().get(String.class);
-		Carrinho carrinhoConfere = (Carrinho) new XStream().fromXML(conteudo);
-		assertTrue(carrinhoConfere.getRua().equals(carrinho.getRua()));
+		Carrinho carrinhoConfere = client.target(response.getLocation()).request().get(Carrinho.class);
+		assertEquals(carrinho.getRua(), carrinhoConfere.getRua());
 	}
 
 	private WebTarget criandoTarget() {
@@ -98,29 +95,24 @@ public class ClientTest {
 	@Test
 	public void testaAlteracaoDaQtdDoProdutoDoCarrinho() {
 		WebTarget target = criandoTarget();
-		XStream geradorXML = new XStream();
 
-		String stringCarrinho = target.path("carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) geradorXML.fromXML(stringCarrinho);
+		Carrinho carrinho = target.path("carrinhos/1").request().get(Carrinho.class);
 
 		Produto produto = carrinho.getProdutos().get(0);
 		produto.setQuantidade(5);
-		String xml = geradorXML.toXML(produto);
 
-		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Entity<Produto> entity = Entity.entity(produto, MediaType.APPLICATION_XML);
 		Response put = target.path("carrinhos/1/produtos/" + produto.getId() + "/quantidade").request().put(entity);
 		assertEquals(200, put.getStatus());
 
-		stringCarrinho = target.path("carrinhos/1").request().get(String.class);
-		carrinho = (Carrinho) geradorXML.fromXML(stringCarrinho);
+		carrinho = target.path("carrinhos/1").request().get(Carrinho.class);
 		produto = carrinho.getProdutos().get(0);
 		assertEquals(5, produto.getQuantidade());
 	}
 
 	@Test
 	public void testaOEndPointDeProjeto() {
-		String conteudo = retornaXmlDoEndPoint("/carrinhos/1");
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
+		Carrinho carrinho = criandoTarget().path("/carrinhos/1").request().get(Carrinho.class);
 		assertEquals("Rua Vergueiro 3185, 8 andar", carrinho.getRua());
 	}
 
@@ -135,9 +127,8 @@ public class ClientTest {
 		Response delete = criandoTarget().path("/carrinhos/1/produtos/6237").request().delete();
 		assertEquals(200, delete.getStatus());
 
-		String carrinhoSemProduto = criandoTarget().path("/carrinhos/1").request().get(String.class);
-		Carrinho carrinho = (Carrinho) new XStream().fromXML(carrinhoSemProduto);
-		List<Produto> produtos = carrinho.getProdutos();
+		Carrinho carrinhoSemProduto = criandoTarget().path("/carrinhos/1").request().get(Carrinho.class);
+		List<Produto> produtos = carrinhoSemProduto.getProdutos();
 		assertEquals(1, produtos.size());
 	}
 

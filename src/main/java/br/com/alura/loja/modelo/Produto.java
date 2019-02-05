@@ -1,5 +1,11 @@
 package br.com.alura.loja.modelo;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Produto {
 
 	private double preco;
@@ -12,6 +18,9 @@ public class Produto {
 		this.nome = nome;
 		this.preco = preco;
 		this.quantidade = quantidade;
+	}
+
+	public Produto() {
 	}
 
 	public double getPreco() {
@@ -42,6 +51,5 @@ public class Produto {
 	public String toString() {
 		return "Produto [preco=" + preco + ", id=" + id + ", nome=" + nome + ", quantidade=" + quantidade + "]";
 	}
-	
-	
+
 }
