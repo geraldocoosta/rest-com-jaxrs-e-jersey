@@ -34,7 +34,7 @@ public class ClientTest {
 	@Before
 	public void before() {
 		server = Servidor.startaServidor();
-		/*Uma aula pra essas 3 linhas de código, xD dms*/
+		/* Uma aula pra essas 3 linhas de código, xD dms */
 		ClientConfig config = new ClientConfig();
 		config.register(new LoggingFilter());
 		client = ClientBuilder.newClient(config);
@@ -93,6 +93,28 @@ public class ClientTest {
 		String jsonASerComparado = client.target(response.getLocation()).request().get(String.class);
 		Projeto fromJson = new Gson().fromJson(jsonASerComparado, Projeto.class);
 		assertTrue(projeto.getNome().equals(fromJson.getNome()));
+	}
+
+	@Test
+	public void testaAlteracaoDaQtdDoProdutoDoCarrinho() {
+		WebTarget target = criandoTarget();
+		XStream geradorXML = new XStream();
+
+		String stringCarrinho = target.path("carrinhos/1").request().get(String.class);
+		Carrinho carrinho = (Carrinho) geradorXML.fromXML(stringCarrinho);
+
+		Produto produto = carrinho.getProdutos().get(0);
+		produto.setQuantidade(5);
+		String xml = geradorXML.toXML(produto);
+
+		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		Response put = target.path("carrinhos/1/produtos/" + produto.getId() + "/quantidade").request().put(entity);
+		assertEquals(200, put.getStatus());
+
+		stringCarrinho = target.path("carrinhos/1").request().get(String.class);
+		carrinho = (Carrinho) geradorXML.fromXML(stringCarrinho);
+		produto = carrinho.getProdutos().get(0);
+		assertEquals(5, produto.getQuantidade());
 	}
 
 	@Test
